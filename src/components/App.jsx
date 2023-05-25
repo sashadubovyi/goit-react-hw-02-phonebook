@@ -15,6 +15,7 @@ class App extends Component {
       { id: 'id-5', name: 'Alex Dubovyi', number: '+380631065900' },
       { id: 'id-6', name: 'Ambulance', number: '101' },
       { id: 'id-7', name: 'Police State', number: '102' },
+      { id: 'id-8', name: 'Pamela Anderson', number: '+380634567890' },
     ],
     filter: '',
     name: '',
