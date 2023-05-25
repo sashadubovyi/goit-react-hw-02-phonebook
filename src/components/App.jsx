@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
-import {
-  Base,
-  ButtonSubmit,
-  ContactName,
-  ContactPhone,
-  ContactsInput,
-  FormContacts,
-  InputName,
-  PhoneBook,
-  Title,
-} from './App.styled';
+import PhoneBook from './Phonebook/Phonebook';
+import Contacts from './Contacts/Contacts';
+import { Base } from './App.styled';
 
 class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '+380974591256' },
+      { id: 'id-2', name: 'Hermione Kline', number: '+380974438912' },
+      { id: 'id-3', name: 'Eden Clements', number: '+380936451779' },
+      { id: 'id-4', name: 'Annie Copeland', number: '+380982279126' },
+      { id: 'id-5', name: 'Alex Dubovyi', number: '+380631065900' },
+      { id: 'id-6', name: 'Ambulance', number: '101' },
+      { id: 'id-7', name: 'Police State', number: '102' },
+    ],
+    filter: '',
     name: '',
     number: '',
   };
@@ -23,10 +24,20 @@ class App extends Component {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
-  handleFormSubmit = evt => {
+  handleSubmit = evt => {
     evt.preventDefault();
 
-    const { name, number } = this.state;
+    const { name, number, contacts } = this.state;
+
+    const existingContact = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (existingContact) {
+      alert('Цей контакт вже існує!');
+      this.setState({ name: '', number: '' });
+      return;
+    }
 
     const newContact = {
       id: nanoid(),
@@ -41,54 +52,46 @@ class App extends Component {
     }));
   };
 
+  handleFilterChange = evt => {
+    this.setState({ filter: evt.target.value });
+  };
+
+  filterContacts = () => {
+    const { contacts, filter } = this.state;
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  handleDelete = userId => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => {
+          return contact.id !== userId;
+        }),
+      };
+    });
+  };
+
   render() {
-    const { contacts, name, number } = this.state;
+    const { name, number, filter } = this.state;
+    const filteredContacts = this.filterContacts();
+
     return (
       <Base>
-        <PhoneBook>
-          <Title>Phonebook</Title>
-          <FormContacts onSubmit={this.handleFormSubmit}>
-            <InputName
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              value={name}
-              onChange={this.handleChange}
-              placeholder="Enter your full name"
-              required
-            />
-            <InputName
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              value={number}
-              onChange={this.handleChange}
-              placeholder="Enter your number"
-              required
-            />
-            <ButtonSubmit type="submit">Add contact</ButtonSubmit>
-          </FormContacts>
-        </PhoneBook>
-        <PhoneBook>
-          <Title>Contacts</Title>
-          <ul>
-            {contacts.map(contact => (
-              <ContactsInput key={contact.id}>
-                <ContactName key={`${contact.id}-name`}>
-                  {contact.name}:
-                </ContactName>
-                <ContactPhone
-                  key={`${contact.id}-phone`}
-                  href="tel:{contact.number}"
-                >
-                  {contact.number}
-                </ContactPhone>
-              </ContactsInput>
-            ))}
-          </ul>
-        </PhoneBook>
+        <PhoneBook
+          handleSubmit={this.handleSubmit}
+          handleChange={this.handleChange}
+          name={name}
+          number={number}
+        />
+        <Contacts
+          filter={filter}
+          handleFilterChange={this.handleFilterChange}
+          filteredContacts={filteredContacts}
+          handleDelete={this.handleDelete}
+        />
       </Base>
     );
   }
