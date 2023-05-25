@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import PhoneBook from './Phonebook/Phonebook';
 import Contacts from './Contacts/Contacts';
 import { Base } from './App.styled';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 class App extends Component {
   state = {
@@ -34,8 +35,7 @@ class App extends Component {
     );
 
     if (existingContact) {
-      alert('Цей контакт вже існує!');
-      this.setState({ name: '', number: '' });
+      Notify.failure('This contact already exists!');
       return;
     }
 
