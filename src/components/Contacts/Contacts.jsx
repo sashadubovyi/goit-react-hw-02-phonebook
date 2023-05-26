@@ -1,16 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  ContactsContainer,
-  Title,
-  InputName,
-  ContactsItem,
-  ContactName,
-  ContactPhone,
-  ButtonDelete,
-} from './Contacts.styled';
+import React, { Component } from 'react';
+import { ContactsContainer, Title } from './Contacts.styled';
+import FilterInput from 'components/Filter/Filter';
+import ContactItem from 'components/ContactItem/ContactItem';
 
-class Contacts extends React.Component {
+class Contacts extends Component {
   render() {
     const {
       filter,
@@ -22,45 +15,14 @@ class Contacts extends React.Component {
     return (
       <ContactsContainer>
         <Title>Contacts</Title>
-        <InputName
-          type="text"
-          name="filter"
-          value={filter}
-          onChange={handleFilterChange}
-          placeholder="Find contact by name"
-        ></InputName>
-        <ul>
-          {filteredContacts.length > 0 ? (
-            filteredContacts.map(contact => (
-              <ContactsItem key={contact.id}>
-                <ContactName key={`${contact.id}-name`}>
-                  {contact.name}:
-                </ContactName>
-                <ContactPhone
-                  key={`${contact.id}-phone`}
-                  href={`tel:${contact.number}`}
-                >
-                  {contact.number}
-                </ContactPhone>
-                <ButtonDelete onClick={() => handleDeleteContact(contact.id)}>
-                  Delete
-                </ButtonDelete>
-              </ContactsItem>
-            ))
-          ) : (
-            <ContactName>No contact found...</ContactName>
-          )}
-        </ul>
+        <FilterInput filter={filter} handleFilterChange={handleFilterChange} />
+        <ContactItem
+          filteredContacts={filteredContacts}
+          handleDeleteContact={handleDeleteContact}
+        />
       </ContactsContainer>
     );
   }
 }
-
-Contacts.propTypes = {
-  filter: PropTypes.string.isRequired,
-  handleFilterChange: PropTypes.func.isRequired,
-  filteredContacts: PropTypes.array.isRequired,
-  handleDeleteContact: PropTypes.func.isRequired,
-};
 
 export default Contacts;

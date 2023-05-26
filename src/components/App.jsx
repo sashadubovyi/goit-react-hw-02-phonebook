@@ -23,7 +23,7 @@ class App extends Component {
   handleAddContact = (name, number) => {
     const { contacts } = this.state;
 
-    const existingContact = contacts.find(
+    const existingContact = contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
@@ -71,18 +71,13 @@ class App extends Component {
 
     return (
       <Base>
-        <div>
-          <PhoneBook handleAddContact={this.handleAddContact} />
-        </div>
-
-        <div>
-          <Contacts
-            filter={filter}
-            handleFilterChange={this.handleFilterChange}
-            filteredContacts={filteredContacts}
-            handleDeleteContact={this.handleDeleteContact}
-          />
-        </div>
+        <PhoneBook handleAddContact={this.handleAddContact} />
+        <Contacts
+          filter={filter}
+          handleFilterChange={this.handleFilterChange}
+          filteredContacts={filteredContacts}
+          handleDeleteContact={this.handleDeleteContact}
+        />
       </Base>
     );
   }
