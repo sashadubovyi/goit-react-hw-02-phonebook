@@ -18,18 +18,10 @@ class App extends Component {
       { id: 'id-8', name: 'Pamela Anderson', number: '+380634567890' },
     ],
     filter: '',
-    name: '',
-    number: '',
   };
 
-  handleChange = evt => {
-    this.setState({ [evt.target.name]: evt.target.value });
-  };
-
-  handleSubmit = evt => {
-    evt.preventDefault();
-
-    const { name, number, contacts } = this.state;
+  handleAddContact = (name, number) => {
+    const { contacts } = this.state;
 
     const existingContact = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
@@ -48,9 +40,17 @@ class App extends Component {
 
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
-      name: '',
-      number: '',
     }));
+  };
+
+  handleDeleteContact = userId => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => {
+          return contact.id !== userId;
+        }),
+      };
+    });
   };
 
   handleFilterChange = evt => {
@@ -65,34 +65,26 @@ class App extends Component {
     );
   };
 
-  handleDelete = userId => {
-    this.setState(prevState => {
-      return {
-        contacts: prevState.contacts.filter(contact => {
-          return contact.id !== userId;
-        }),
-      };
-    });
-  };
-
   render() {
-    const { name, number, filter } = this.state;
+    const { filter } = this.state;
     const filteredContacts = this.filterContacts();
 
     return (
       <Base>
-        <PhoneBook
-          handleSubmit={this.handleSubmit}
-          handleChange={this.handleChange}
-          name={name}
-          number={number}
-        />
-        <Contacts
-          filter={filter}
-          handleFilterChange={this.handleFilterChange}
-          filteredContacts={filteredContacts}
-          handleDelete={this.handleDelete}
-        />
+        <div>
+          <h1>Phonebook</h1>
+          <PhoneBook handleAddContact={this.handleAddContact} />
+        </div>
+
+        <div>
+          <h2>Contacts</h2>
+          <Contacts
+            filter={filter}
+            handleFilterChange={this.handleFilterChange}
+            filteredContacts={filteredContacts}
+            handleDeleteContact={this.handleDeleteContact}
+          />
+        </div>
       </Base>
     );
   }
