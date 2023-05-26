@@ -72,12 +72,10 @@ class App extends Component {
     return (
       <Base>
         <div>
-          <h1>Phonebook</h1>
           <PhoneBook handleAddContact={this.handleAddContact} />
         </div>
 
         <div>
-          <h2>Contacts</h2>
           <Contacts
             filter={filter}
             handleFilterChange={this.handleFilterChange}
